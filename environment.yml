@@ -1,0 +1,6 @@
+name: stactools-threedep
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - gdal

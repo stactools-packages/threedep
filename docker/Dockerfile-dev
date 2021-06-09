@@ -1,0 +1,7 @@
+FROM stactools-threedep:latest
+
+RUN conda install -c conda-forge pandoc
+
+COPY . /src/stactools-threedep
+RUN pip install -r /src/stactools-threedep/requirements-dev.txt
+WORKDIR /src/stactools-threedep

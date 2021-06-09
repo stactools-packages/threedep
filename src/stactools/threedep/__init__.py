@@ -11,3 +11,5 @@ def register_plugin(registry):
 
 
 __all__ = [Metadata]
+__version__ = '0.1.5'
+"""Library version"""
