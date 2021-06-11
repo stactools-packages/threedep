@@ -1,15 +1,16 @@
 import datetime
 import unittest
 
-from tests.utils import TestData
 from stactools.threedep import stac
 from stactools.threedep.constants import USGS_FTP_BASE
+
+from tests import test_data
 
 
 class CreateItemTest(unittest.TestCase):
     def test_create_item_1(self):
-        path = TestData.get_path(
-            "data-files/threedep/base/1/TIFF/n41w106/USGS_1_n41w106.xml")
+        path = test_data.get_path(
+            "data-files/base/1/TIFF/n41w106/USGS_1_n41w106.xml")
         item = stac.create_item(path)
         self.assertEqual(item.id, "n41w106-1")
         self.assertTrue(item.geometry is not None)
@@ -104,8 +105,7 @@ class CreateItemTest(unittest.TestCase):
         item.validate()
 
     def test_create_item_1_weird_date(self):
-        path = TestData.get_path(
-            "data-files/threedep/one-offs/USGS_1_n19w090.xml")
+        path = test_data.get_path("data-files/one-offs/USGS_1_n19w090.xml")
         item = stac.create_item(path)
         self.assertEqual(
             item.datetime,
@@ -118,15 +118,15 @@ class CreateItemTest(unittest.TestCase):
                               tzinfo=datetime.timezone.utc))
 
     def test_create_item_13(self):
-        path = TestData.get_path(
-            "data-files/threedep/base/13/TIFF/n41w106/USGS_13_n41w106.xml")
+        path = test_data.get_path(
+            "data-files/base/13/TIFF/n41w106/USGS_13_n41w106.xml")
         item = stac.create_item(path)
         self.assertEqual(item.id, "n41w106-13")
         self.assertEqual(item.common_metadata.gsd, 10)
 
     def test_create_item_with_base(self):
-        path = TestData.get_path(
-            "data-files/threedep/base/1/TIFF/n41w106/USGS_1_n41w106.xml")
+        path = test_data.get_path(
+            "data-files/base/1/TIFF/n41w106/USGS_1_n41w106.xml")
         item = stac.create_item(path, base=USGS_FTP_BASE)
         data = item.assets["data"]
         self.assertEqual(
@@ -149,7 +149,7 @@ class CreateItemTest(unittest.TestCase):
              "/Elevation/1/TIFF/n41w106/USGS_1_n41w106.xml"))
 
     def test_create_item_from_product_and_id(self):
-        path = TestData.get_path("data-files/threedep/base")
+        path = test_data.get_path("data-files/base")
         item = stac.create_item_from_product_and_id("1", "n41w106", path)
         item.validate()
 
@@ -161,14 +161,14 @@ class CreateItemTest(unittest.TestCase):
             did_it = True
             return href
 
-        path = TestData.get_path(
-            "data-files/threedep/base/1/TIFF/n41w106/USGS_1_n41w106.xml")
+        path = test_data.get_path(
+            "data-files/base/1/TIFF/n41w106/USGS_1_n41w106.xml")
         _ = stac.create_item(path, modify_href)
         self.assertTrue(did_it)
 
     def test_explicit_none_goes_to_aws(self):
-        path = TestData.get_path(
-            "data-files/threedep/base/1/TIFF/n41w106/USGS_1_n41w106.xml")
+        path = test_data.get_path(
+            "data-files/base/1/TIFF/n41w106/USGS_1_n41w106.xml")
         item0 = stac.create_item(path)
         item1 = stac.create_item(path, base=None)
         self.assertEqual(item0.to_dict(), item1.to_dict())

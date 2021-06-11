@@ -4,7 +4,9 @@ from tempfile import TemporaryDirectory
 import pystac
 
 from stactools.threedep.commands import create_threedep_command
-from tests.utils import CliTestCase, TestData
+from stactools.testing import CliTestCase
+
+from tests import test_data
 
 
 class CreateCollectionTest(CliTestCase):
@@ -12,7 +14,7 @@ class CreateCollectionTest(CliTestCase):
         return [create_threedep_command]
 
     def test_create_collection(self):
-        path = TestData.get_path("data-files/threedep/base")
+        path = test_data.get_path("data-files/base")
         with TemporaryDirectory() as directory:
             result = self.run_command([
                 "threedep", "create-catalog", directory, "--id", "n41w106",
