@@ -1,4 +1,3 @@
-from __future__ import annotations
 import datetime
 from typing import Union, Optional
 from xml.etree import ElementTree
@@ -17,10 +16,10 @@ from stactools.threedep import utils
 class Metadata:
     """3DEP file metadata."""
     @classmethod
-    def from_href(
-            cls,
-            href: str,
-            read_href_modifier: Optional[ReadHrefModifier] = None) -> Metadata:
+    def from_href(cls,
+                  href: str,
+                  read_href_modifier: Optional[ReadHrefModifier] = None
+                  ) -> "Metadata":
         """Creates a metadata from an href to the XML metadata file."""
         text = io.read_text(href, read_href_modifier)
         element_tree = ElementTree.fromstring(text)
@@ -30,7 +29,7 @@ class Metadata:
     def from_product_and_id(cls,
                             product: str,
                             id: str,
-                            base: str = None) -> Metadata:
+                            base: str = None) -> "Metadata":
         """Creates a Metadata from a product and id."""
         if base is None:
             base = DEFAULT_BASE
@@ -85,7 +84,7 @@ class Metadata:
                               mapping(box(*original_bbox)))
 
     @property
-    def datetime(self) -> Union[datetime.datetime, None]:
+    def datetime(self) -> Union["datetime.datetime", None]:
         """Returns the collection publication datetime."""
         if self.current == "publication date":
             return _format_date(self.pubdate)
@@ -93,7 +92,7 @@ class Metadata:
             raise NotImplementedError
 
     @property
-    def start_datetime(self) -> Union[datetime.datetime, None]:
+    def start_datetime(self) -> Union["datetime.datetime", None]:
         """Returns the start datetime for this record.
 
         This can be a while ago, since the national elevation dataset was
@@ -102,7 +101,7 @@ class Metadata:
         return _format_date(self.begdate)
 
     @property
-    def end_datetime(self) -> Union[datetime.datetime, None]:
+    def end_datetime(self) -> Union["datetime.datetime", None]:
         """Returns the end datetime for this record."""
         return _format_date(self.enddate, end_of_year=True)
 
@@ -203,8 +202,9 @@ class Metadata:
                           id_only=id_only)
 
 
-def _format_date(date: str,
-                 end_of_year: bool = False) -> Union[datetime.datetime, None]:
+def _format_date(
+        date: str,
+        end_of_year: bool = False) -> Union["datetime.datetime", None]:
     if len(date) == 4:
         year = int(date)
         if end_of_year:
