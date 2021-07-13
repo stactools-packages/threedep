@@ -1,15 +1,51 @@
 # stactools-threedep
 
-Template repostitory for [stactools](https://github.com/stac-utils/stactools) packages.
+- Name: threedep
+- Package: `stactools.threedep`
+- PyPI: https://pypi.org/project/stactools-threedep/
+- Owner: @gadomski
+- Dataset homepage: https://www.usgs.gov/core-science-systems/ngp/3dep
+- STAC extensions used:
+  - [proj](https://github.com/stac-extensions/projection/)
+- Extra fields:
+  - `threedep:region`: A short string identifying a 10x10 lanlon box that the data falls within.
+    Used to create subcatalogs for multi-level catalog tree.
 
-## How to use
+This package creates STAC items for USGS 3DEP (formerly NED) elevation data.
 
-1. Clone this repository and name it `stactools-{NAME}`, where `NAME` is your package name.
-   This name should be short, memorable, and a valid Python package name (i.e. it shouldn't start with a number, etc).
-2. Update `setup.cfg` with your package name, description, and such.
-3. Rename `src/stactools.threedep` to `src/stactools/{NAME}`.
-4. Rewrite this README to provide information about how to use your package.
-5. Update the LICENSE with your company's information (or whomever holds the copyright).
-6. Update the environment name in `environment.yml`.
-7. Update the environment variables in `.github/workflows/release.yml` to the appropriate values to publish for your organization.
-8. Update all scripts in the `docker` directory to refer to `stactools-{NAME}` and `stactools-{NAME}-dev`.
+## Examples
+
+### STAC objects
+
+- [Catalog](examples/catalog.json)
+- [Collection](examples/usgs-3dep-1/collection.json)
+- [Item](examples/usgs-3dep-1/n40w110/n41w106-1/n41w106-1.json)
+
+### Command-line usage
+
+Create a catalog for all 3DEP data.
+This catalog will contain two collections, one for the 1 arc-second data and one for the 1/3 arc-second data:
+
+```bash
+$ stac threedep create-catalog destination
+```
+
+Create a catalog for a single lat+lon id:
+
+```bash
+$ stac threedep create-catalog --id n41w106 destination
+```
+
+Download all XML metadata:
+
+```bash
+$ stac threedep download-metadata destination
+```
+
+Fetch all available IDs:
+
+```bash
+$ stac threedep fetch-ids
+```
+
+Use `stac threedep --help` to see all subcommands and options.
