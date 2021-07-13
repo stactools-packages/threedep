@@ -1,0 +1,64 @@
+{
+  "type": "Collection",
+  "id": "usgs-3dep-13",
+  "stac_version": "1.0.0",
+  "description": "USGS 3DEP 1/3 arc-second DEMs",
+  "links": [
+    {
+      "rel": "root",
+      "href": "../catalog.json",
+      "type": "application/json"
+    },
+    {
+      "rel": "child",
+      "href": "./n40w110/catalog.json",
+      "type": "application/json"
+    },
+    {
+      "rel": "parent",
+      "href": "../catalog.json",
+      "type": "application/json"
+    }
+  ],
+  "stac_extensions": [],
+  "title": "1/3 arc-second",
+  "extent": {
+    "spatial": {
+      "bbox": [
+        [
+          -106.000555555594,
+          39.9994444449061,
+          -104.999444445204,
+          41.0005555552955
+        ]
+      ]
+    },
+    "temporal": {
+      "interval": [
+        [
+          "1948-01-01T00:00:00Z",
+          "2015-07-17T00:00:00Z"
+        ]
+      ]
+    }
+  },
+  "license": "PDDL-1.0",
+  "keywords": [
+    "USGS",
+    "3DEP",
+    "NED",
+    "DEM",
+    "elevation"
+  ],
+  "providers": [
+    {
+      "name": "USGS",
+      "roles": [
+        "producer",
+        "processor",
+        "host"
+      ],
+      "url": "https://www.usgs.gov/core-science-systems/ngp/3dep"
+    }
+  ]
+}
