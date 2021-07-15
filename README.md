@@ -8,7 +8,7 @@
 - STAC extensions used:
   - [proj](https://github.com/stac-extensions/projection/)
 - Extra fields:
-  - `threedep:region`: A short string identifying a 10x10 lanlon box that the data falls within.
+  - `threedep:region`: A short string identifying a 10x10 latlon box that the data falls within.
     Used to create subcatalogs for multi-level catalog tree.
 
 This package creates STAC items for USGS 3DEP (formerly NED) elevation data.
