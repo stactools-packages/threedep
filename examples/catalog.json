@@ -21,7 +21,7 @@
     },
     {
       "rel": "self",
-      "href": "/Users/gadomski/Code/stactools-packages/threedep/examples/catalog.json",
+      "href": "https://raw.githubusercontent.com/stactools-packages/threedep/main/examples/catalog.json",
       "type": "application/json"
     }
   ],
