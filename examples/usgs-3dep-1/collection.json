@@ -20,7 +20,35 @@
       "type": "application/json"
     }
   ],
-  "stac_extensions": [],
+  "stac_extensions": [
+    "https://stac-extensions.github.io/item-assets/v1.0.0/schema.json"
+  ],
+  "item_assets": {
+    "data": {
+      "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+      "roles": [
+        "data"
+      ]
+    },
+    "metadata": {
+      "type": "application/xml",
+      "roles": [
+        "metadata"
+      ]
+    },
+    "thumbnail": {
+      "type": "image/jpeg",
+      "roles": [
+        "thumbnail"
+      ]
+    },
+    "gpkg": {
+      "type": "application/geopackage+sqlite3",
+      "roles": [
+        "metadata"
+      ]
+    }
+  },
   "title": "1 arc-second",
   "extent": {
     "spatial": {

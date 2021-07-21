@@ -1,7 +1,8 @@
 import click
 import os.path
 
-from pystac import Catalog, Collection, Extent, CatalogType
+from pystac import Catalog, Collection, Extent, CatalogType, MediaType
+from pystac.extensions.item_assets import AssetDefinition, ItemAssetsExtension
 
 from stactools.core.io import read_text
 from stactools.threedep.constants import (PRODUCTS, DESCRIPTION, USGS_PROVIDER,
@@ -67,6 +68,30 @@ def create_threedep_command(cli):
                 description=description,
                 extent=extent,
                 license="PDDL-1.0")
+            item_assets = ItemAssetsExtension.ext(collection,
+                                                  add_if_missing=True)
+            item_assets.item_assets = {
+                "data":
+                AssetDefinition({
+                    "type": MediaType.COG,
+                    "roles": ["data"],
+                }),
+                "metadata":
+                AssetDefinition({
+                    "type": MediaType.XML,
+                    "roles": ["metadata"]
+                }),
+                "thumbnail":
+                AssetDefinition({
+                    "type": MediaType.JPEG,
+                    "roles": ["thumbnail"]
+                }),
+                "gpkg":
+                AssetDefinition({
+                    "type": MediaType.GEOPACKAGE,
+                    "roles": ["metadata"]
+                })
+            }
             collections[product] = collection
         catalog = Catalog(id=USGS_3DEP_ID,
                           description=DESCRIPTION,
