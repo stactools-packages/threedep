@@ -119,7 +119,7 @@ class Metadata:
         """Returns the data asset (aka the tiff file)."""
         return Asset(href=self._asset_href_with_extension(base, "tif"),
                      title=self.title,
-                     description=self.description,
+                     description=None,
                      media_type=MediaType.COG,
                      roles=["data"])
 
