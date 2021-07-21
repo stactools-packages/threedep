@@ -84,7 +84,12 @@ class CreateItemTest(unittest.TestCase):
             ("https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/"
              "1/TIFF/n41w106/n41w106.gpkg"))
         self.assertTrue(data.title is None)
-        self.assertTrue(data.description is None)
+        self.assertEqual(
+            data.description,
+            "Spatially-referenced polygonal footprints of the source data used "
+            "to assemble the DEM layer. The attributes of each source dataset, "
+            "such as original spatial resolution, production method, and date "
+            "entered into the standard DEM, are linked to these footprints.")
         self.assertEqual(data.media_type, "application/geopackage+sqlite3")
         self.assertEqual(data.roles, ["metadata"])
 

@@ -137,11 +137,17 @@ class Metadata:
 
     def gpkg_asset(self, base: str = DEFAULT_BASE) -> Asset:
         """Returns the geopackage asset."""
+        description = (
+            "Spatially-referenced polygonal footprints of the source data used "
+            "to assemble the DEM layer. The attributes of each source dataset, "
+            "such as original spatial resolution, production method, and date "
+            "entered into the standard DEM, are linked to these footprints.")
         return Asset(href=self._asset_href_with_extension(base,
                                                           "gpkg",
                                                           id_only=True),
                      media_type=MediaType.GEOPACKAGE,
-                     roles=["metadata"])
+                     roles=["metadata"],
+                     description=description)
 
     def via_link(self, base: str = DEFAULT_BASE) -> Link:
         """Returns the via link for this file."""
