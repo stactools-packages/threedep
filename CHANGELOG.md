@@ -8,16 +8,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
-- More template information to the README ([#22](https://github.com/stactools-packages/template/pull/22))
-
 ### Deprecated
-
-- Nothing.
 
 ### Removed
 
-- Nothing.
-
 ### Fixed
 
-- Nothing.
+## v0.2.0
+
+The first release as its own repository.
