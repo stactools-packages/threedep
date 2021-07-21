@@ -99,7 +99,7 @@ class CreateItemTest(unittest.TestCase):
         self.assertEqual(projection.shape, [3612, 3612])
         self.assertEqual(projection.transform, [
             0.00027777778, 0.0, -106.001666667082, 0.0, -0.00027777778,
-            41.0016666667842, 0.0, 0.0, 1.0
+            41.0016666667842
         ])
 
         self.assertEqual(item.properties["threedep:region"], "n40w110")
