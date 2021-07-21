@@ -51,9 +51,7 @@ class CreateItemTest(unittest.TestCase):
                          ("https://prd-tnm.s3.amazonaws.com/StagedProducts"
                           "/Elevation/1/TIFF/n41w106/USGS_1_n41w106.tif"))
         self.assertEqual(data.title, "USGS 1 arc-second n41w106 1 x 1 degree")
-        self.assertTrue(
-            data.description.startswith(
-                "This tile of the 3D Elevation Program (3DEP)"))
+        self.assertIsNone(data.description)
         self.assertTrue(
             data.media_type,
             "image/tiff; application=geotiff; profile=cloud-optimized")
