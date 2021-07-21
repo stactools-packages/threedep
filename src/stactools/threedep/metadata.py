@@ -158,9 +158,6 @@ class Metadata:
             0.0,
             -float(self.latres),
             float(self.maxy),
-            0.0,
-            0.0,
-            1.0,
         ]
         return {
             "epsg": THREEDEP_EPSG,
