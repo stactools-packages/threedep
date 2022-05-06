@@ -9,17 +9,17 @@ fi
 function usage() {
     echo -n \
         "Usage: $(basename "$0")
-Format code with yapf
+Format code
 "
 }
-
-DIRS_TO_CHECK=("src" "tests")
 
 if [ "${BASH_SOURCE[0]}" = "${0}" ]; then
     if [ "${1:-}" = "--help" ]; then
         usage
     else
-        # Code formatting
-        yapf -ipr ${DIRS_TO_CHECK[@]}
+        pre-commit run black --all-files
+        pre-commit run doc8 --all-files
+        pre-commit run flake8 --all-files
+        pre-commit run isort --all-files
     fi
 fi
