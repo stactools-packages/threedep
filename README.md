@@ -27,25 +27,25 @@ Create a catalog for all 3DEP data.
 This catalog will contain two collections, one for the 1 arc-second data and one for the 1/3 arc-second data:
 
 ```bash
-$ stac threedep create-catalog destination
+stac threedep create-catalog destination
 ```
 
 Create a catalog for a single lat+lon id:
 
 ```bash
-$ stac threedep create-catalog --id n41w106 destination
+stac threedep create-catalog --id n41w106 destination
 ```
 
 Download all XML metadata:
 
 ```bash
-$ stac threedep download-metadata destination
+stac threedep download-metadata destination
 ```
 
 Fetch all available IDs:
 
 ```bash
-$ stac threedep fetch-ids
+stac threedep fetch-ids
 ```
 
 Use `stac threedep --help` to see all subcommands and options.
