@@ -1,64 +1,79 @@
 import datetime
-from typing import Union, Optional
-from xml.etree import ElementTree
-from xml.etree.ElementTree import Element
+from typing import Any, Dict, Optional, Union
 
+from pystac import Asset, Link, MediaType
 from shapely.geometry import box, mapping
-from pystac import Asset, MediaType, Link
-
-from stactools.core import io
 from stactools.core.io import ReadHrefModifier
+from stactools.core.io.xml import XmlElement
 from stactools.core.projection import reproject_geom
-from stactools.threedep.constants import THREEDEP_CRS, THREEDEP_EPSG, DEFAULT_BASE
+
 from stactools.threedep import utils
+from stactools.threedep.constants import DEFAULT_BASE, THREEDEP_CRS, THREEDEP_EPSG
 
 
 class Metadata:
     """3DEP file metadata."""
-    @classmethod
-    def from_href(cls,
-                  href: str,
-                  read_href_modifier: Optional[ReadHrefModifier] = None
-                  ) -> "Metadata":
-        """Creates a metadata from an href to the XML metadata file."""
-        text = io.read_text(href, read_href_modifier)
-        element_tree = ElementTree.fromstring(text)
-        return cls(element_tree)
 
     @classmethod
-    def from_product_and_id(cls,
-                            product: str,
-                            id: str,
-                            base: str = None) -> "Metadata":
+    def from_href(
+        cls, href: str, read_href_modifier: Optional[ReadHrefModifier] = None
+    ) -> "Metadata":
+        """Creates a metadata from an href to the XML metadata file."""
+        xml_element = XmlElement.from_file(href, read_href_modifier)
+        return cls(xml_element)
+
+    @classmethod
+    def from_product_and_id(
+        cls, product: str, id: str, base: Optional[str] = None
+    ) -> "Metadata":
         """Creates a Metadata from a product and id."""
         if base is None:
             base = DEFAULT_BASE
         href = utils.path(product, id, extension="xml", base=base)
         return cls.from_href(href)
 
-    def __init__(self, xml: Element):
+    def __init__(self, xml: XmlElement):
         """Creates a new metadata object from XML metadata."""
-        self.title = xml.findtext("./idinfo/citation/citeinfo/title")
-        self.description = xml.findtext("./idinfo/descript/abstract")
-        bounding = xml.find("./idinfo/spdom/bounding")
-        self.minx = bounding.findtext("./westbc")
-        self.miny = bounding.findtext("./southbc")
-        self.maxx = bounding.findtext("./eastbc")
-        self.maxy = bounding.findtext("./northbc")
-        self.pubdate = xml.findtext("./idinfo/citation/citeinfo/pubdate")
-        self.begdate = xml.findtext(
-            "./idinfo/timeperd/timeinfo/rngdates/begdate")
-        self.enddate = xml.findtext(
-            "./idinfo/timeperd/timeinfo/rngdates/enddate")
-        self.current = xml.findtext("./idinfo/timeperd/current")
-        self.rowcount = xml.findtext("./spdoinfo/rastinfo/rowcount")
-        self.colcount = xml.findtext("./spdoinfo/rastinfo/colcount")
-        self.latres = xml.findtext("./spref/horizsys/geograph/latres")
-        self.longres = xml.findtext("./spref/horizsys/geograph/longres")
-        tiff_href = xml.findtext(
-            "./distinfo/stdorder/digform/digtopt/onlinopt/computer/networka/networkr"
+        self.title = xml.find_text_or_throw(
+            "./idinfo/citation/citeinfo/title", _missing_element
         )
-        parts = tiff_href.split('/')[-4:]
+        self.description = xml.find_text_or_throw(
+            "./idinfo/descript/abstract", _missing_element
+        )
+        bounding = xml.find_or_throw("./idinfo/spdom/bounding", _missing_element)
+        self.minx = float(bounding.find_text_or_throw("./westbc", _missing_element))
+        self.miny = float(bounding.find_text_or_throw("./southbc", _missing_element))
+        self.maxx = float(bounding.find_text_or_throw("./eastbc", _missing_element))
+        self.maxy = float(bounding.find_text_or_throw("./northbc", _missing_element))
+        self.pubdate = xml.find_text_or_throw(
+            "./idinfo/citation/citeinfo/pubdate", _missing_element
+        )
+        self.begdate = xml.find_text_or_throw(
+            "./idinfo/timeperd/timeinfo/rngdates/begdate", _missing_element
+        )
+        self.enddate = xml.find_text_or_throw(
+            "./idinfo/timeperd/timeinfo/rngdates/enddate", _missing_element
+        )
+        self.current = xml.find_text_or_throw(
+            "./idinfo/timeperd/current", _missing_element
+        )
+        self.rowcount = xml.find_text_or_throw(
+            "./spdoinfo/rastinfo/rowcount", _missing_element
+        )
+        self.colcount = xml.find_text_or_throw(
+            "./spdoinfo/rastinfo/colcount", _missing_element
+        )
+        self.latres = xml.find_text_or_throw(
+            "./spref/horizsys/geograph/latres", _missing_element
+        )
+        self.longres = xml.find_text_or_throw(
+            "./spref/horizsys/geograph/longres", _missing_element
+        )
+        tiff_href = xml.find_text_or_throw(
+            "./distinfo/stdorder/digform/digtopt/onlinopt/computer/networka/networkr",
+            _missing_element,
+        )
+        parts = tiff_href.split("/")[-4:]
         self.product = parts[0]
         self.id = parts[2]
 
@@ -72,19 +87,18 @@ class Metadata:
         return "{}-{}".format(self.id, self.product)
 
     @property
-    def geometry(self) -> dict:
+    def geometry(self) -> Dict[str, Any]:
         """Returns this item's geometry in WGS84."""
         original_bbox = [
-            float(self.minx),
-            float(self.miny),
-            float(self.maxx),
-            float(self.maxy)
+            self.minx,
+            self.miny,
+            self.maxx,
+            self.maxy,
         ]
-        return reproject_geom(THREEDEP_CRS, "EPSG:4326",
-                              mapping(box(*original_bbox)))
+        return reproject_geom(THREEDEP_CRS, "EPSG:4326", mapping(box(*original_bbox)))
 
     @property
-    def datetime(self) -> Union["datetime.datetime", None]:
+    def publication_datetime(self) -> Optional[datetime.datetime]:
         """Returns the collection publication datetime."""
         if self.current == "publication date":
             return _format_date(self.pubdate)
@@ -92,7 +106,7 @@ class Metadata:
             raise NotImplementedError
 
     @property
-    def start_datetime(self) -> Union["datetime.datetime", None]:
+    def start_datetime(self) -> Optional[datetime.datetime]:
         """Returns the start datetime for this record.
 
         This can be a while ago, since the national elevation dataset was
@@ -101,7 +115,7 @@ class Metadata:
         return _format_date(self.begdate)
 
     @property
-    def end_datetime(self) -> Union["datetime.datetime", None]:
+    def end_datetime(self) -> Optional[datetime.datetime]:
         """Returns the end datetime for this record."""
         return _format_date(self.enddate, end_of_year=True)
 
@@ -115,46 +129,53 @@ class Metadata:
         else:
             raise NotImplementedError
 
-    def data_asset(self, base: str = DEFAULT_BASE) -> Asset:
+    def data_asset(self, base: Optional[str] = DEFAULT_BASE) -> Asset:
         """Returns the data asset (aka the tiff file)."""
-        return Asset(href=self._asset_href_with_extension(base, "tif"),
-                     title=self.title,
-                     description=None,
-                     media_type=MediaType.COG,
-                     roles=["data"])
+        return Asset(
+            href=self._asset_href_with_extension(base, "tif"),
+            title=self.title,
+            description=None,
+            media_type=MediaType.COG,
+            roles=["data"],
+        )
 
-    def metadata_asset(self, base: str = DEFAULT_BASE) -> Asset:
+    def metadata_asset(self, base: Optional[str] = DEFAULT_BASE) -> Asset:
         """Returns the data asset (aka the tiff file)."""
-        return Asset(href=self._asset_href_with_extension(base, "xml"),
-                     media_type=MediaType.XML,
-                     roles=["metadata"])
+        return Asset(
+            href=self._asset_href_with_extension(base, "xml"),
+            media_type=MediaType.XML,
+            roles=["metadata"],
+        )
 
-    def thumbnail_asset(self, base: str = DEFAULT_BASE) -> Asset:
+    def thumbnail_asset(self, base: Optional[str] = DEFAULT_BASE) -> Asset:
         """Returns the thumbnail asset."""
-        return Asset(href=self._asset_href_with_extension(base, "jpg"),
-                     media_type=MediaType.JPEG,
-                     roles=["thumbnail"])
+        return Asset(
+            href=self._asset_href_with_extension(base, "jpg"),
+            media_type=MediaType.JPEG,
+            roles=["thumbnail"],
+        )
 
-    def gpkg_asset(self, base: str = DEFAULT_BASE) -> Asset:
+    def gpkg_asset(self, base: Optional[str] = DEFAULT_BASE) -> Asset:
         """Returns the geopackage asset."""
         description = (
             "Spatially-referenced polygonal footprints of the source data used "
             "to assemble the DEM layer. The attributes of each source dataset, "
             "such as original spatial resolution, production method, and date "
-            "entered into the standard DEM, are linked to these footprints.")
-        return Asset(href=self._asset_href_with_extension(base,
-                                                          "gpkg",
-                                                          id_only=True),
-                     media_type=MediaType.GEOPACKAGE,
-                     roles=["metadata"],
-                     description=description)
+            "entered into the standard DEM, are linked to these footprints."
+        )
+        return Asset(
+            href=self._asset_href_with_extension(base, "gpkg", id_only=True),
+            media_type=MediaType.GEOPACKAGE,
+            roles=["metadata"],
+            description=description,
+        )
 
-    def via_link(self, base: str = DEFAULT_BASE) -> Link:
+    def via_link(self, base: Optional[str] = DEFAULT_BASE) -> Link:
         """Returns the via link for this file."""
         return Link("via", self._asset_href_with_extension(base, "xml"))
 
     @property
-    def projection_extension_dict(self) -> dict:
+    def projection_extension_dict(self) -> Dict[str, Any]:
         """Returns a dictionary of values to be applied to the projection extension."""
         shape = [int(self.rowcount), int(self.colcount)]
         transform = [
@@ -180,6 +201,7 @@ class Metadata:
         creating subcatalogs for STACBrowser.
         """
         import math
+
         n_or_s = self.id[0]
         lat = float(self.id[1:3])
         if n_or_s == "s":
@@ -192,22 +214,19 @@ class Metadata:
         lon = math.floor(lon / 10) * 10
         return f"{n_or_s}{abs(lat)}{e_or_w}{abs(lon)}"
 
-    def _asset_href_with_extension(self,
-                                   base: str,
-                                   extension: str,
-                                   id_only: bool = False) -> str:
+    def _asset_href_with_extension(
+        self, base: Optional[str], extension: str, id_only: bool = False
+    ) -> str:
         if base is None:
             base = DEFAULT_BASE
-        return utils.path(self.product,
-                          self.id,
-                          base=base,
-                          extension=extension,
-                          id_only=id_only)
+        return utils.path(
+            self.product, self.id, base=base, extension=extension, id_only=id_only
+        )
 
 
 def _format_date(
-        date: str,
-        end_of_year: bool = False) -> Union["datetime.datetime", None]:
+    date: str, end_of_year: bool = False
+) -> Union["datetime.datetime", None]:
     if len(date) == 4:
         year = int(date)
         if end_of_year:
@@ -219,23 +238,19 @@ def _format_date(
         if year < 1800 or year > datetime.date.today().year:
             return None  # There's some bad metadata in the USGS records
         else:
-            return datetime.datetime(year,
-                                     month,
-                                     day,
-                                     0,
-                                     0,
-                                     0,
-                                     tzinfo=datetime.timezone.utc)
+            return datetime.datetime(
+                year, month, day, 0, 0, 0, tzinfo=datetime.timezone.utc
+            )
     elif len(date) == 8:
         year = int(date[0:4])
         month = int(date[4:6])
         day = int(date[6:8])
-        return datetime.datetime(year,
-                                 month,
-                                 day,
-                                 0,
-                                 0,
-                                 0,
-                                 tzinfo=datetime.timezone.utc)
+        return datetime.datetime(
+            year, month, day, 0, 0, 0, tzinfo=datetime.timezone.utc
+        )
     else:
         return None
+
+
+def _missing_element(xpath: str) -> Exception:
+    raise ValueError(f"missing required element: {xpath}")

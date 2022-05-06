@@ -1,7 +1,7 @@
 # flake8: noqa
 
 from pyproj import CRS
-from pystac import Provider
+from pystac import Provider, ProviderRole
 
 USGS_3DEP_ID = "usgs-3dep"
 THREEDEP_EPSG = 5498
@@ -16,8 +16,14 @@ The seamless DEM layers under the 3DEP program are a multi-resolution dataset th
 
 USGS_PROVIDER = Provider(
     name="USGS",
-    roles=["producer", "processor", "host"],
-    url="https://www.usgs.gov/core-science-systems/ngp/3dep")
+    roles=[
+        ProviderRole.PRODUCER,
+        ProviderRole.PROCESSOR,
+        ProviderRole.LICENSOR,
+        ProviderRole.HOST,
+    ],
+    url="https://www.usgs.gov/core-science-systems/ngp/3dep",
+)
 
 USGS_FTP_SERVER = "rockyftp.cr.usgs.gov"
 USGS_FTP_BASE = f"ftp://{USGS_FTP_SERVER}/vdelivery/Datasets/Staged/Elevation"

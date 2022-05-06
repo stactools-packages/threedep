@@ -1,53 +1,64 @@
-import click
 import os.path
+from collections import defaultdict
+from typing import List
 
-from pystac import Catalog, Collection, Extent, CatalogType, MediaType
+import click
+from click import Command, Group
+from pystac import Catalog, CatalogType, Collection, Extent, MediaType
 from pystac.extensions.item_assets import AssetDefinition, ItemAssetsExtension
-
 from stactools.core.io import read_text
-from stactools.threedep.constants import (PRODUCTS, DESCRIPTION, USGS_PROVIDER,
-                                          USGS_FTP_BASE, USGS_3DEP_ID)
-from stactools.threedep import utils, stac
+
+from stactools.threedep import stac, utils
+from stactools.threedep.constants import (
+    DESCRIPTION,
+    PRODUCTS,
+    USGS_3DEP_ID,
+    USGS_FTP_BASE,
+    USGS_PROVIDER,
+)
 
 
-def create_threedep_command(cli):
+def create_threedep_command(cli: Group) -> Command:
     """Creates the threedep command line utility."""
+
     @cli.group("threedep", short_help="Work with USGS 3DEP elevation data.")
-    def threedep():
+    def threedep() -> None:
         pass
 
     @threedep.command(
-        "create-catalog",
-        short_help="Create a STAC catalog for existing USGS 3DEP data")
+        "create-catalog", short_help="Create a STAC catalog for existing USGS 3DEP data"
+    )
     @click.argument("destination")
-    @click.option("-s",
-                  "--source",
-                  help="The href of a directory tree containing metadata",
-                  default=None)
-    @click.option("-i",
-                  "--id",
-                  multiple=True,
-                  help="Ids to fetch. If not provided, will fetch all IDs.")
+    @click.option(
+        "-s",
+        "--source",
+        help="The href of a directory tree containing metadata",
+        default=None,
+    )
+    @click.option(
+        "-i",
+        "--asset-id",
+        "asset_ids",
+        multiple=True,
+        help="Asset ids to fetch. If not provided, will fetch all IDs.",
+    )
     @click.option("--quiet/--no-quiet", default=False)
-    def create_catalog_command(destination, source, id, quiet):
+    def create_catalog_command(
+        destination: str, source: str, asset_ids: List[str], quiet: bool
+    ) -> None:
         """Creates a relative published 3DEP catalog in DESTINATION.
 
         If SOURCE is not provided, will use the metadata in AWS. SOURCE is
         expected to be a directory tree mirroring the structure on USGS, so
         it is best created using `stac threedep download-metadata`.
         """
-        base_ids = id  # not sure how to rename arguments in click
         collections = {}
-        items = {}
+        items = defaultdict(list)
         for product in PRODUCTS:
-            items[product] = []
-            if base_ids:
-                ids = base_ids
-            else:
-                ids = utils.fetch_ids(product)
-            for id in ids:
-                item = stac.create_item_from_product_and_id(
-                    product, id, source)
+            if not asset_ids:
+                asset_ids = utils.fetch_ids(product)
+            for asset_id in asset_ids:
+                item = stac.create_item_from_product_and_id(product, asset_id, source)
                 items[product].append(item)
                 if not quiet:
                     print(item.id)
@@ -67,36 +78,33 @@ def create_threedep_command(cli):
                 providers=[USGS_PROVIDER],
                 description=description,
                 extent=extent,
-                license="PDDL-1.0")
-            item_assets = ItemAssetsExtension.ext(collection,
-                                                  add_if_missing=True)
+                license="PDDL-1.0",
+            )
+            item_assets = ItemAssetsExtension.ext(collection, add_if_missing=True)
             item_assets.item_assets = {
-                "data":
-                AssetDefinition({
-                    "type": MediaType.COG,
-                    "roles": ["data"],
-                }),
-                "metadata":
-                AssetDefinition({
-                    "type": MediaType.XML,
-                    "roles": ["metadata"]
-                }),
-                "thumbnail":
-                AssetDefinition({
-                    "type": MediaType.JPEG,
-                    "roles": ["thumbnail"]
-                }),
-                "gpkg":
-                AssetDefinition({
-                    "type": MediaType.GEOPACKAGE,
-                    "roles": ["metadata"]
-                })
+                "data": AssetDefinition(
+                    {
+                        "type": MediaType.COG,
+                        "roles": ["data"],
+                    }
+                ),
+                "metadata": AssetDefinition(
+                    {"type": MediaType.XML, "roles": ["metadata"]}
+                ),
+                "thumbnail": AssetDefinition(
+                    {"type": MediaType.JPEG, "roles": ["thumbnail"]}
+                ),
+                "gpkg": AssetDefinition(
+                    {"type": MediaType.GEOPACKAGE, "roles": ["metadata"]}
+                ),
             }
             collections[product] = collection
-        catalog = Catalog(id=USGS_3DEP_ID,
-                          description=DESCRIPTION,
-                          title="USGS 3DEP DEMs",
-                          catalog_type=CatalogType.RELATIVE_PUBLISHED)
+        catalog = Catalog(
+            id=USGS_3DEP_ID,
+            description=DESCRIPTION,
+            title="USGS 3DEP DEMs",
+            catalog_type=CatalogType.RELATIVE_PUBLISHED,
+        )
         for product, collection in collections.items():
             catalog.add_child(collection)
             collection.add_items(items[product])
@@ -105,36 +113,35 @@ def create_threedep_command(cli):
         catalog.save()
         catalog.validate()
 
-    @threedep.command("download-metadata",
-                      short_help="Download all metadata for USGS 3DEP data")
+    @threedep.command(
+        "download-metadata", short_help="Download all metadata for USGS 3DEP data"
+    )
     @click.argument("destination")
-    @click.option("-i",
-                  "--id",
-                  multiple=True,
-                  help="Ids to fetch. If not provided, will fetch all IDs.")
+    @click.option(
+        "-i",
+        "--asset-id",
+        "asset_ids",
+        multiple=True,
+        help="Asset ids to fetch. If not provided, will fetch all IDs.",
+    )
     @click.option("--quiet/--no-quiet", default=False)
-    def download_metadata_command(destination, id, quiet):
+    def download_metadata_command(
+        destination: str, asset_ids: List[str], quiet: bool
+    ) -> None:
         """Creates a 3DEP collection in DESTINATION."""
-        base_ids = id  # not sure how to rename arguments in click
         for product in PRODUCTS:
-            if base_ids:
-                ids = base_ids
-            else:
-                ids = utils.fetch_ids(product)
-            for id in ids:
-                path = utils.path(product,
-                                  id,
-                                  extension="xml",
-                                  base=destination)
+            if not asset_ids:
+                asset_ids = utils.fetch_ids(product)
+            for id in asset_ids:
+                path = utils.path(product, id, extension="xml", base=destination)
                 if os.path.exists(path):
                     if not quiet:
                         print("{} exists, skipping download...".format(path))
                     continue
                 os.makedirs(os.path.dirname(path), exist_ok=True)
-                source_path = utils.path(product,
-                                         id,
-                                         extension="xml",
-                                         base=USGS_FTP_BASE)
+                source_path = utils.path(
+                    product, id, extension="xml", base=USGS_FTP_BASE
+                )
                 if not quiet:
                     print("{} -> {}".format(source_path, path))
                 text = read_text(source_path)
@@ -142,13 +149,17 @@ def create_threedep_command(cli):
                     f.write(text)
 
     @threedep.command(
-        "fetch-ids",
-        short_help="Fetch all product ids and print them to stdout")
+        "fetch-ids", short_help="Fetch all product ids and print them to stdout"
+    )
     @click.argument("product")
-    @click.option("--usgs-ftp/--no-usgs-ftp",
-                  default=False,
-                  help="Fetch from the USGS FTP instead of AWS.")
-    def fetch_ids_command(product: str, usgs_ftp: bool):
+    @click.option(
+        "--usgs-ftp/--no-usgs-ftp",
+        default=False,
+        help="Fetch from the USGS FTP instead of AWS.",
+    )
+    def fetch_ids_command(product: str, usgs_ftp: bool) -> None:
         """Fetches product ids and prints them to stdout."""
         for id in utils.fetch_ids(product, use_usgs_ftp=usgs_ftp):
             print(id)
+
+    return threedep
