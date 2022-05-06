@@ -8,9 +8,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- pre-commit, black, mypy, and more ([#11](https://github.com/stactools-packages/threedep/pull/11))
+
 ### Deprecated
 
 ### Removed
+
+- Python 3.6 support ([#11](https://github.com/stactools-packages/threedep/pull/11)) 
 
 ### Fixed
 
