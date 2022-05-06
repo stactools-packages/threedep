@@ -10,22 +10,24 @@ from tests import test_data
 
 class CreateItemTest(unittest.TestCase):
     def test_create_item_1(self) -> None:
-        path = test_data.get_path("data-files/base/1/TIFF/n41w106/USGS_1_n41w106.xml")
+        path = test_data.get_path(
+            "data-files/base/1/TIFF/current/n41w106/USGS_1_n41w106.xml"
+        )
         item = stac.create_item(path)
         self.assertEqual(item.id, "n41w106-1")
         self.assertTrue(item.geometry is not None)
         self.assertTrue(item.bbox is not None)
         self.assertEqual(
             item.datetime,
-            datetime.datetime(2015, 7, 17, 0, 0, 0, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2020, 10, 10, 0, 0, 0, tzinfo=datetime.timezone.utc),
         )
         self.assertEqual(
             item.common_metadata.start_datetime,
-            datetime.datetime(1948, 1, 1, 0, 0, 0, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2020, 10, 3, 0, 0, 0, tzinfo=datetime.timezone.utc),
         )
         self.assertEqual(
             item.common_metadata.end_datetime,
-            datetime.datetime(2013, 12, 31, 0, 0, 0, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2020, 10, 10, 0, 0, 0, tzinfo=datetime.timezone.utc),
         )
         self.assertEqual(item.common_metadata.gsd, 30)
 
@@ -34,10 +36,10 @@ class CreateItemTest(unittest.TestCase):
             data.href,
             (
                 "https://prd-tnm.s3.amazonaws.com/StagedProducts"
-                "/Elevation/1/TIFF/n41w106/USGS_1_n41w106.tif"
+                "/Elevation/1/TIFF/current/n41w106/USGS_1_n41w106.tif"
             ),
         )
-        self.assertEqual(data.title, "USGS 1 arc-second n41w106 1 x 1 degree")
+        self.assertEqual(data.title, "USGS 1 Arc Second n41w106 20220331")
         self.assertIsNone(data.description)
         self.assertTrue(
             data.media_type, "image/tiff; application=geotiff; profile=cloud-optimized"
@@ -49,7 +51,7 @@ class CreateItemTest(unittest.TestCase):
             data.href,
             (
                 "https://prd-tnm.s3.amazonaws.com/StagedProducts"
-                "/Elevation/1/TIFF/n41w106/USGS_1_n41w106.xml"
+                "/Elevation/1/TIFF/current/n41w106/USGS_1_n41w106.xml"
             ),
         )
         self.assertTrue(data.title is None)
@@ -62,7 +64,7 @@ class CreateItemTest(unittest.TestCase):
             data.href,
             (
                 "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/"
-                "1/TIFF/n41w106/USGS_1_n41w106.jpg"
+                "1/TIFF/current/n41w106/USGS_1_n41w106.jpg"
             ),
         )
         self.assertTrue(data.title is None)
@@ -75,7 +77,7 @@ class CreateItemTest(unittest.TestCase):
             data.href,
             (
                 "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/"
-                "1/TIFF/n41w106/n41w106.gpkg"
+                "1/TIFF/current/n41w106/n41w106.gpkg"
             ),
         )
         self.assertTrue(data.title is None)
@@ -95,7 +97,7 @@ class CreateItemTest(unittest.TestCase):
             link.target,
             (
                 "https://prd-tnm.s3.amazonaws.com/StagedProducts"
-                "/Elevation/1/TIFF/n41w106/USGS_1_n41w106.xml"
+                "/Elevation/1/TIFF/current/n41w106/USGS_1_n41w106.xml"
             ),
         )
 
@@ -105,12 +107,12 @@ class CreateItemTest(unittest.TestCase):
         self.assertEqual(
             projection.transform,
             [
-                0.00027777778,
+                0.00027777777803598015,
                 0.0,
-                -106.001666667082,
+                -106.00166666708242,
                 0.0,
-                -0.00027777778,
-                41.0016666667842,
+                0.000277777777786999,
+                41.00166666678416,
             ],
         )
 
@@ -123,24 +125,28 @@ class CreateItemTest(unittest.TestCase):
         item = stac.create_item(path)
         self.assertEqual(
             item.datetime,
-            datetime.datetime(2013, 1, 1, 0, 0, 0, tzinfo=datetime.timezone.utc),
+            datetime.datetime(2013, 11, 1, 0, 0, 0, tzinfo=datetime.timezone.utc),
         )
 
     def test_create_item_13(self) -> None:
-        path = test_data.get_path("data-files/base/13/TIFF/n41w106/USGS_13_n41w106.xml")
+        path = test_data.get_path(
+            "data-files/base/13/TIFF/current/n41w106/USGS_13_n41w106.xml"
+        )
         item = stac.create_item(path)
         self.assertEqual(item.id, "n41w106-13")
         self.assertEqual(item.common_metadata.gsd, 10)
 
     def test_create_item_with_base(self) -> None:
-        path = test_data.get_path("data-files/base/1/TIFF/n41w106/USGS_1_n41w106.xml")
+        path = test_data.get_path(
+            "data-files/base/1/TIFF/current/n41w106/USGS_1_n41w106.xml"
+        )
         item = stac.create_item(path, base=USGS_FTP_BASE)
         data = item.assets["data"]
         self.assertEqual(
             data.href,
             (
                 "ftp://rockyftp.cr.usgs.gov/vdelivery/Datasets/Staged"
-                "/Elevation/1/TIFF/n41w106/USGS_1_n41w106.tif"
+                "/Elevation/1/TIFF/current/n41w106/USGS_1_n41w106.tif"
             ),
         )
         data = item.assets["metadata"]
@@ -148,7 +154,7 @@ class CreateItemTest(unittest.TestCase):
             data.href,
             (
                 "ftp://rockyftp.cr.usgs.gov/vdelivery/Datasets/Staged"
-                "/Elevation/1/TIFF/n41w106/USGS_1_n41w106.xml"
+                "/Elevation/1/TIFF/current/n41w106/USGS_1_n41w106.xml"
             ),
         )
         data = item.assets["thumbnail"]
@@ -156,7 +162,7 @@ class CreateItemTest(unittest.TestCase):
             data.href,
             (
                 "ftp://rockyftp.cr.usgs.gov/vdelivery/Datasets/Staged/Elevation/"
-                "1/TIFF/n41w106/USGS_1_n41w106.jpg"
+                "1/TIFF/current/n41w106/USGS_1_n41w106.jpg"
             ),
         )
         link = next(link for link in item.links if link.rel == "via")
@@ -165,7 +171,7 @@ class CreateItemTest(unittest.TestCase):
             link.target,
             (
                 "ftp://rockyftp.cr.usgs.gov/vdelivery/Datasets/Staged"
-                "/Elevation/1/TIFF/n41w106/USGS_1_n41w106.xml"
+                "/Elevation/1/TIFF/current/n41w106/USGS_1_n41w106.xml"
             ),
         )
 
@@ -182,12 +188,16 @@ class CreateItemTest(unittest.TestCase):
             did_it = True
             return href
 
-        path = test_data.get_path("data-files/base/1/TIFF/n41w106/USGS_1_n41w106.xml")
+        path = test_data.get_path(
+            "data-files/base/1/TIFF/current/n41w106/USGS_1_n41w106.xml"
+        )
         _ = stac.create_item(path, modify_href)
         self.assertTrue(did_it)
 
     def test_explicit_none_goes_to_aws(self) -> None:
-        path = test_data.get_path("data-files/base/1/TIFF/n41w106/USGS_1_n41w106.xml")
+        path = test_data.get_path(
+            "data-files/base/1/TIFF/current/n41w106/USGS_1_n41w106.xml"
+        )
         item0 = stac.create_item(path)
         item1 = stac.create_item(path, base=None)
         self.assertEqual(item0.to_dict(), item1.to_dict())

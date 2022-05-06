@@ -37,7 +37,7 @@ def create_item_from_metadata(
         id=metadata.stac_id,
         geometry=geometry,
         bbox=bbox,
-        datetime=metadata.publication_datetime,
+        datetime=metadata.end_datetime,
         properties={},
     )
     start_datetime = metadata.start_datetime
