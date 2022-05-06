@@ -73,9 +73,13 @@ class Metadata:
             "./distinfo/stdorder/digform/digtopt/onlinopt/computer/networka/networkr",
             _missing_element,
         )
-        parts = tiff_href.split("/")[-4:]
-        self.product = parts[0]
-        self.id = parts[2]
+        parts = tiff_href.split("/")[-5:]
+        # Some metadata have a 'current' or 'historical' in the path, some don't.
+        if parts[2] == "TIFF":
+            self.product = parts[1]
+        else:
+            self.product = parts[0]
+        self.id = parts[3]
 
     @property
     def stac_id(self) -> str:

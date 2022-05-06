@@ -17,7 +17,7 @@ def fetch_ids(product: str, use_usgs_ftp: bool = False) -> List[str]:
 
 
 def _fetch_ids_from_usgs_ftp(product: str) -> List[str]:
-    directory = f"vdelivery/Datasets/Staged/Elevation/{product}/TIFF"
+    directory = f"vdelivery/Datasets/Staged/Elevation/{product}/TIFF/current"
     ftp = FTP(USGS_FTP_SERVER)
     ftp.login()
     ids = [
@@ -56,15 +56,15 @@ def path(
 ) -> str:
     """Returns the subpath for this product and id.
 
-    E.g. path("1", "n41w106") == "1/TIFF/n41w106/USGS_1_n41w106"
-    E.g. path("1", "n41w106", extension="tif") == "1/TIFF/n41w106/USGS_1_n41w106.tif"
-    E.g. path("1", "n41w106", base="/base/dir") == "/base/dir/1/TIFF/n41w106/USGS_1_n41w106"
-    E.g. path("1", "n41w106", id_only=True) == "/base/dir/1/TIFF/n41w106/n41w106"
+    E.g. path("1", "n41w106") == "1/TIFF/current/n41w106/USGS_1_n41w106"
+    E.g. path("1", "n41w106", extension="tif") == "1/TIFF/current/n41w106/USGS_1_n41w106.tif"
+    E.g. path("1", "n41w106", base="/base/dir") == "/base/dir/1/TIFF/current/n41w106/USGS_1_n41w106"
+    E.g. path("1", "n41w106", id_only=True) == "/base/dir/1/TIFF/current/n41w106/n41w106"
     """
     if id_only:
-        path = "{}/TIFF/{}/{}".format(product, id, id)
+        path = "{}/TIFF/current/{}/{}".format(product, id, id)
     else:
-        path = "{}/TIFF/{}/USGS_{}_{}".format(product, id, product, id)
+        path = "{}/TIFF/current/{}/USGS_{}_{}".format(product, id, product, id)
     if extension:
         path = "{}.{}".format(path, extension)
     if base:
