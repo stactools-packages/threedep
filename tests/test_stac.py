@@ -116,8 +116,6 @@ class CreateItemTest(unittest.TestCase):
             ],
         )
 
-        self.assertEqual(item.properties["threedep:region"], "n40w110")
-
         item.validate()
 
     def test_create_item_1_weird_date(self) -> None:
