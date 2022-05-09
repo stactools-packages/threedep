@@ -1,6 +1,7 @@
 from typing import Optional
 
 from pystac import Item
+from pystac.extensions.raster import DataType, RasterBand, RasterExtension, Sampling
 from stactools.core import create
 from stactools.core.io import ReadHrefModifier
 
@@ -42,8 +43,18 @@ def create_item_from_metadata(
     item.common_metadata.start_datetime = metadata.start_datetime
     item.common_metadata.end_datetime = metadata.end_datetime
     item.links.append(metadata.via_link(base))
-    item.assets["data"] = metadata.data_asset(base)
-    item.assets["metadata"] = metadata.metadata_asset(base)
-    item.assets["thumbnail"] = metadata.thumbnail_asset(base)
-    item.assets["gpkg"] = metadata.gpkg_asset(base)
+    data = metadata.data_asset(base)
+    item.add_asset("data", data)
+    raster = RasterExtension.ext(data, add_if_missing=True)
+    raster.bands = [
+        RasterBand.create(
+            nodata=-999999.0,
+            sampling=Sampling.POINT,
+            data_type=DataType.FLOAT32,
+            spatial_resolution=metadata.spatial_resolution,
+        )
+    ]
+    item.add_asset("metadata", metadata.metadata_asset(base))
+    item.add_asset("thumbnail", metadata.thumbnail_asset(base))
+    item.add_asset("gpkg", metadata.gpkg_asset(base))
     return item
