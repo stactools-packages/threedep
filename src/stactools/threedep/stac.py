@@ -46,5 +46,4 @@ def create_item_from_metadata(
     item.assets["metadata"] = metadata.metadata_asset(base)
     item.assets["thumbnail"] = metadata.thumbnail_asset(base)
     item.assets["gpkg"] = metadata.gpkg_asset(base)
-    item.properties["threedep:region"] = metadata.region
     return item
