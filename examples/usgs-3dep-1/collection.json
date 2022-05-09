@@ -30,6 +30,14 @@
       "type": "image/tiff; application=geotiff; profile=cloud-optimized",
       "roles": [
         "data"
+      ],
+      "raster:bands": [
+        {
+          "nodata": -999999.0,
+          "sampling": "point",
+          "data_type": "float32",
+          "spatial_resolution": 30
+        }
       ]
     },
     "metadata": {
