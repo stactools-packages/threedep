@@ -58,7 +58,9 @@ def create_threedep_command(cli: Group) -> Command:
             if not asset_ids:
                 asset_ids = utils.fetch_ids(product)
             for asset_id in asset_ids:
-                item = stac.create_item_from_product_and_id(product, asset_id, source)
+                item = stac.create_item_from_product_and_id(
+                    product, asset_id, base=source
+                )
                 items[product].append(item)
                 if not quiet:
                     print(item.id)

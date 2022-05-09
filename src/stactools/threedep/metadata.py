@@ -1,14 +1,12 @@
 import datetime
-from typing import Any, Dict, Optional, Union
+from typing import Optional, Union
 
 from pystac import Asset, Link, MediaType
-from shapely.geometry import box, mapping
 from stactools.core.io import ReadHrefModifier
 from stactools.core.io.xml import XmlElement
-from stactools.core.projection import reproject_geom
 
 from stactools.threedep import utils
-from stactools.threedep.constants import DEFAULT_BASE, THREEDEP_CRS, THREEDEP_EPSG
+from stactools.threedep.constants import DEFAULT_BASE
 
 
 class Metadata:
@@ -40,11 +38,6 @@ class Metadata:
         self.description = xml.find_text_or_throw(
             "./idinfo/descript/abstract", _missing_element
         )
-        bounding = xml.find_or_throw("./idinfo/spdom/bounding", _missing_element)
-        self.minx = float(bounding.find_text_or_throw("./westbc", _missing_element))
-        self.miny = float(bounding.find_text_or_throw("./southbc", _missing_element))
-        self.maxx = float(bounding.find_text_or_throw("./eastbc", _missing_element))
-        self.maxy = float(bounding.find_text_or_throw("./northbc", _missing_element))
         self.pubdate = xml.find_text_or_throw(
             "./idinfo/citation/citeinfo/pubdate", _missing_element
         )
@@ -91,17 +84,6 @@ class Metadata:
         return "{}-{}".format(self.id, self.product)
 
     @property
-    def geometry(self) -> Dict[str, Any]:
-        """Returns this item's geometry in WGS84."""
-        original_bbox = [
-            self.minx,
-            self.miny,
-            self.maxx,
-            self.maxy,
-        ]
-        return reproject_geom(THREEDEP_CRS, "EPSG:4326", mapping(box(*original_bbox)))
-
-    @property
     def publication_datetime(self) -> Optional[datetime.datetime]:
         """Returns the collection publication datetime."""
         if self.current == "publication date":
@@ -124,7 +106,7 @@ class Metadata:
         return _format_date(self.enddate, end_of_year=True)
 
     @property
-    def gsd(self) -> float:
+    def spatial_resolution(self) -> float:
         """Returns the nominal ground sample distance from these metadata."""
         if self.product == "1":
             return 30
@@ -136,7 +118,7 @@ class Metadata:
     def data_asset(self, base: Optional[str] = DEFAULT_BASE) -> Asset:
         """Returns the data asset (aka the tiff file)."""
         return Asset(
-            href=self._asset_href_with_extension(base, "tif"),
+            href=self.asset_href_with_extension(base, "tif"),
             title=self.title,
             description=None,
             media_type=MediaType.COG,
@@ -146,7 +128,7 @@ class Metadata:
     def metadata_asset(self, base: Optional[str] = DEFAULT_BASE) -> Asset:
         """Returns the data asset (aka the tiff file)."""
         return Asset(
-            href=self._asset_href_with_extension(base, "xml"),
+            href=self.asset_href_with_extension(base, "xml"),
             media_type=MediaType.XML,
             roles=["metadata"],
         )
@@ -154,7 +136,7 @@ class Metadata:
     def thumbnail_asset(self, base: Optional[str] = DEFAULT_BASE) -> Asset:
         """Returns the thumbnail asset."""
         return Asset(
-            href=self._asset_href_with_extension(base, "jpg"),
+            href=self.asset_href_with_extension(base, "jpg"),
             media_type=MediaType.JPEG,
             roles=["thumbnail"],
         )
@@ -168,7 +150,7 @@ class Metadata:
             "entered into the standard DEM, are linked to these footprints."
         )
         return Asset(
-            href=self._asset_href_with_extension(base, "gpkg", id_only=True),
+            href=self.asset_href_with_extension(base, "gpkg", id_only=True),
             media_type=MediaType.GEOPACKAGE,
             roles=["metadata"],
             description=description,
@@ -176,25 +158,7 @@ class Metadata:
 
     def via_link(self, base: Optional[str] = DEFAULT_BASE) -> Link:
         """Returns the via link for this file."""
-        return Link("via", self._asset_href_with_extension(base, "xml"))
-
-    @property
-    def projection_extension_dict(self) -> Dict[str, Any]:
-        """Returns a dictionary of values to be applied to the projection extension."""
-        shape = [int(self.rowcount), int(self.colcount)]
-        transform = [
-            float(self.longres),
-            0.0,
-            float(self.minx),
-            0.0,
-            -float(self.latres),
-            float(self.maxy),
-        ]
-        return {
-            "epsg": THREEDEP_EPSG,
-            "shape": shape,
-            "transform": transform,
-        }
+        return Link("via", self.asset_href_with_extension(base, "xml"))
 
     @property
     def region(self) -> str:
@@ -218,7 +182,7 @@ class Metadata:
         lon = math.floor(lon / 10) * 10
         return f"{n_or_s}{abs(lat)}{e_or_w}{abs(lon)}"
 
-    def _asset_href_with_extension(
+    def asset_href_with_extension(
         self, base: Optional[str], extension: str, id_only: bool = False
     ) -> str:
         if base is None:
