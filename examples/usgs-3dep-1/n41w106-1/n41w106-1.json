@@ -1,0 +1,117 @@
+{
+  "type": "Feature",
+  "stac_version": "1.0.0",
+  "id": "n41w106-1",
+  "properties": {
+    "proj:epsg": 4269,
+    "proj:transform": [
+      0.00027777777803598015,
+      0.0,
+      -106.00166666708242,
+      0.0,
+      -0.000277777777786999,
+      41.00166666678416
+    ],
+    "proj:shape": [
+      3612,
+      3612
+    ],
+    "start_datetime": "2020-10-03T00:00:00Z",
+    "end_datetime": "2020-10-10T00:00:00Z",
+    "threedep:region": "n40w110",
+    "datetime": "2020-10-10T00:00:00Z"
+  },
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [
+          -104.998333,
+          39.998333
+        ],
+        [
+          -104.998333,
+          41.001667
+        ],
+        [
+          -106.001667,
+          41.001667
+        ],
+        [
+          -106.001667,
+          39.998333
+        ],
+        [
+          -104.998333,
+          39.998333
+        ]
+      ]
+    ]
+  },
+  "links": [
+    {
+      "rel": "via",
+      "href": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1/TIFF/current/n41w106/USGS_1_n41w106.xml"
+    },
+    {
+      "rel": "root",
+      "href": "../../catalog.json",
+      "type": "application/json",
+      "title": "USGS 3DEP DEMs"
+    },
+    {
+      "rel": "collection",
+      "href": "../collection.json",
+      "type": "application/json",
+      "title": "1 arc-second"
+    },
+    {
+      "rel": "parent",
+      "href": "../collection.json",
+      "type": "application/json",
+      "title": "1 arc-second"
+    }
+  ],
+  "assets": {
+    "data": {
+      "href": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1/TIFF/current/n41w106/USGS_1_n41w106.tif",
+      "type": "image/tiff; application=geotiff; profile=cloud-optimized",
+      "title": "USGS 1 Arc Second n41w106 20220331",
+      "roles": [
+        "data"
+      ]
+    },
+    "metadata": {
+      "href": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1/TIFF/current/n41w106/USGS_1_n41w106.xml",
+      "type": "application/xml",
+      "roles": [
+        "metadata"
+      ]
+    },
+    "thumbnail": {
+      "href": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1/TIFF/current/n41w106/USGS_1_n41w106.jpg",
+      "type": "image/jpeg",
+      "roles": [
+        "thumbnail"
+      ]
+    },
+    "gpkg": {
+      "href": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1/TIFF/current/n41w106/n41w106.gpkg",
+      "type": "application/geopackage+sqlite3",
+      "description": "Spatially-referenced polygonal footprints of the source data used to assemble the DEM layer. The attributes of each source dataset, such as original spatial resolution, production method, and date entered into the standard DEM, are linked to these footprints.",
+      "roles": [
+        "metadata"
+      ]
+    }
+  },
+  "bbox": [
+    -106.001667,
+    39.998333,
+    -104.998333,
+    41.001667
+  ],
+  "stac_extensions": [
+    "https://stac-extensions.github.io/projection/v1.0.0/schema.json"
+  ],
+  "collection": "usgs-3dep-1"
+}

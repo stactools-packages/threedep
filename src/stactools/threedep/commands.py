@@ -43,8 +43,13 @@ def create_threedep_command(cli: Group) -> Command:
         help="Asset ids to fetch. If not provided, will fetch all IDs.",
     )
     @click.option("--quiet/--no-quiet", default=False)
+    @click.option("-c", "--catalog-type", type=str, default=CatalogType.SELF_CONTAINED)
     def create_catalog_command(
-        destination: str, source: str, asset_ids: List[str], quiet: bool
+        destination: str,
+        source: str,
+        asset_ids: List[str],
+        quiet: bool,
+        catalog_type: CatalogType,
     ) -> None:
         """Creates a relative published 3DEP catalog in DESTINATION.
 
@@ -105,12 +110,11 @@ def create_threedep_command(cli: Group) -> Command:
             id=USGS_3DEP_ID,
             description=DESCRIPTION,
             title="USGS 3DEP DEMs",
-            catalog_type=CatalogType.RELATIVE_PUBLISHED,
+            catalog_type=catalog_type,
         )
         for product, collection in collections.items():
             catalog.add_child(collection)
             collection.add_items(items[product])
-        catalog.generate_subcatalogs("${threedep:region}")
         catalog.normalize_hrefs(destination)
         catalog.save()
         catalog.validate()

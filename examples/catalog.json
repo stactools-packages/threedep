@@ -7,22 +7,20 @@
     {
       "rel": "root",
       "href": "./catalog.json",
-      "type": "application/json"
+      "type": "application/json",
+      "title": "USGS 3DEP DEMs"
     },
     {
       "rel": "child",
       "href": "./usgs-3dep-1/collection.json",
-      "type": "application/json"
+      "type": "application/json",
+      "title": "1 arc-second"
     },
     {
       "rel": "child",
       "href": "./usgs-3dep-13/collection.json",
-      "type": "application/json"
-    },
-    {
-      "rel": "self",
-      "href": "https://raw.githubusercontent.com/stactools-packages/threedep/main/examples/catalog.json",
-      "type": "application/json"
+      "type": "application/json",
+      "title": "1/3 arc-second"
     }
   ],
   "stac_extensions": [],
