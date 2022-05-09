@@ -3,27 +3,23 @@ from tempfile import TemporaryDirectory
 from typing import Callable, List
 
 import pystac
-import pytest
 from click import Command, Group
 from pystac import Catalog, Collection
 from pystac.extensions.item_assets import ItemAssetsExtension
 from stactools.testing.cli_test import CliTestCase
 
 from stactools.threedep.commands import create_threedep_command
-from tests import test_data
 
 
 class CreateCollectionTest(CliTestCase):
     def create_subcommand_functions(self) -> List[Callable[[Group], Command]]:
         return [create_threedep_command]
 
-    @pytest.mark.skip("skipping until we adapt to new paths and add vcr")
     def test_create_collection(self) -> None:
-        path = test_data.get_path("data-files/base")
         with TemporaryDirectory() as directory:
             result = self.run_command(
                 f"threedep create-catalog {directory} --asset-id n41w106 "
-                f"--asset-id n40w106 --quiet --source {path}"
+                f"--asset-id n40w106 --quiet"
             )
             self.assertEqual(result.exit_code, 0, msg="\n{}".format(result.output))
             catalog = pystac.read_file(os.path.join(directory, "catalog.json"))
