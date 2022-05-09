@@ -9,14 +9,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Added
 
 - pre-commit, black, mypy, and more ([#11](https://github.com/stactools-packages/threedep/pull/11))
+- Raster and scientific extensions, package description ([#12](https://github.com/stactools-packages/threedep/pull/12))
 
 ### Deprecated
 
 ### Removed
 
 - Python 3.6 support ([#11](https://github.com/stactools-packages/threedep/pull/11)) 
+- `threedep:region` ([#12](https://github.com/stactools-packages/threedep/pull/12))
 
 ### Fixed
+
+- Proj extension, license, asset paths ([#12](https://github.com/stactools-packages/threedep/pull/12))
 
 ## v0.2.0
 
