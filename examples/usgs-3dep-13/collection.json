@@ -7,17 +7,19 @@
     {
       "rel": "root",
       "href": "../catalog.json",
-      "type": "application/json"
+      "type": "application/json",
+      "title": "USGS 3DEP DEMs"
     },
     {
-      "rel": "child",
-      "href": "./n40w110/catalog.json",
+      "rel": "item",
+      "href": "./n41w106-13/n41w106-13.json",
       "type": "application/json"
     },
     {
       "rel": "parent",
       "href": "../catalog.json",
-      "type": "application/json"
+      "type": "application/json",
+      "title": "USGS 3DEP DEMs"
     }
   ],
   "stac_extensions": [
@@ -54,18 +56,18 @@
     "spatial": {
       "bbox": [
         [
-          -106.000555555594,
-          39.9994444449061,
-          -104.999444445204,
-          41.0005555552955
+          -106.000556,
+          39.999444,
+          -104.999444,
+          41.000556
         ]
       ]
     },
     "temporal": {
       "interval": [
         [
-          "1948-01-01T00:00:00Z",
-          "2015-07-17T00:00:00Z"
+          "2020-10-03T00:00:00Z",
+          "2020-10-10T00:00:00Z"
         ]
       ]
     }
@@ -84,6 +86,7 @@
       "roles": [
         "producer",
         "processor",
+        "licensor",
         "host"
       ],
       "url": "https://www.usgs.gov/core-science-systems/ngp/3dep"

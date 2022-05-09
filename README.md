@@ -8,8 +8,7 @@
 - STAC extensions used:
   - [proj](https://github.com/stac-extensions/projection/)
 - Extra fields:
-  - `threedep:region`: A short string identifying a 10x10 latlon box that the data falls within.
-    Used to create subcatalogs for multi-level catalog tree.
+  - None
 
 This package creates STAC items for USGS 3DEP (formerly NED) elevation data.
 
@@ -19,7 +18,7 @@ This package creates STAC items for USGS 3DEP (formerly NED) elevation data.
 
 - [Catalog](examples/catalog.json)
 - [Collection](examples/usgs-3dep-1/collection.json)
-- [Item](examples/usgs-3dep-1/n40w110/n41w106-1/n41w106-1.json)
+- [Item](examples/usgs-3dep-1/n41w106-1/n41w106-1.json)
 
 ### Command-line usage
 
@@ -33,7 +32,7 @@ stac threedep create-catalog destination
 Create a catalog for a single lat+lon id:
 
 ```bash
-stac threedep create-catalog --id n41w106 destination
+stac threedep create-catalog --asset-id n41w106 examples
 ```
 
 Download all XML metadata:
