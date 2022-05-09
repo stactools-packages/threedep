@@ -7,8 +7,8 @@
 - Dataset homepage: https://www.usgs.gov/core-science-systems/ngp/3dep
 - STAC extensions used:
   - [proj](https://github.com/stac-extensions/projection/)
-- Extra fields:
-  - None
+  - [raster](https://github.com/stac-extensions/raster/)
+  - [scientific](https://github.com/stac-extensions/scientific/)
 
 This package creates STAC items for USGS 3DEP (formerly NED) elevation data.
 

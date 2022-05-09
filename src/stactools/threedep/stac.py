@@ -1,7 +1,9 @@
+import datetime
 from typing import Optional
 
 from pystac import Item
 from pystac.extensions.raster import DataType, RasterBand, RasterExtension, Sampling
+from pystac.extensions.scientific import ScientificExtension
 from stactools.core import create
 from stactools.core.io import ReadHrefModifier
 
@@ -43,6 +45,14 @@ def create_item_from_metadata(
     item.common_metadata.start_datetime = metadata.start_datetime
     item.common_metadata.end_datetime = metadata.end_datetime
     item.links.append(metadata.via_link(base))
+
+    scientific = ScientificExtension.ext(item, add_if_missing=True)
+    assert metadata.publication_datetime
+    scientific.citation = (
+        f"U.S. Geological Survey, {metadata.publication_datetime.year}, {metadata.title}, "
+        f"accessed {datetime.date.today().isoformat()}"
+    )
+
     data = metadata.data_asset(base)
     item.add_asset("data", data)
     raster = RasterExtension.ext(data, add_if_missing=True)

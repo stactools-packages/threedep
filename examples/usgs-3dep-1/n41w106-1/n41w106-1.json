@@ -18,6 +18,7 @@
     ],
     "start_datetime": "2020-10-03T00:00:00Z",
     "end_datetime": "2020-10-10T00:00:00Z",
+    "sci:citation": "U.S. Geological Survey, 2022, USGS 1 Arc Second n41w106 20220331, accessed 2022-05-09",
     "datetime": "2020-10-10T00:00:00Z"
   },
   "geometry": {
@@ -119,6 +120,7 @@
   ],
   "stac_extensions": [
     "https://stac-extensions.github.io/projection/v1.0.0/schema.json",
+    "https://stac-extensions.github.io/scientific/v1.0.0/schema.json",
     "https://stac-extensions.github.io/raster/v1.0.0/schema.json"
   ],
   "collection": "usgs-3dep-1"
