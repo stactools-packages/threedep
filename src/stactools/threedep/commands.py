@@ -6,6 +6,7 @@ import click
 from click import Command, Group
 from pystac import Catalog, CatalogType, Collection, Extent, MediaType
 from pystac.extensions.item_assets import AssetDefinition, ItemAssetsExtension
+from pystac.extensions.raster import DataType, Sampling
 from stactools.core.io import read_text
 
 from stactools.threedep import stac, utils
@@ -73,9 +74,11 @@ def create_threedep_command(cli: Group) -> Command:
             if product == "1":
                 title = "1 arc-second"
                 description = "USGS 3DEP 1 arc-second DEMs"
+                spatial_resolution = 30
             elif product == "13":
                 title = "1/3 arc-second"
                 description = "USGS 3DEP 1/3 arc-second DEMs"
+                spatial_resolution = 10
             else:
                 raise NotImplementedError
             collection = Collection(
@@ -93,6 +96,14 @@ def create_threedep_command(cli: Group) -> Command:
                     {
                         "type": MediaType.COG,
                         "roles": ["data"],
+                        "raster:bands": [
+                            {
+                                "nodata": -999999.0,
+                                "sampling": Sampling.POINT,
+                                "data_type": DataType.FLOAT32,
+                                "spatial_resolution": spatial_resolution,
+                            }
+                        ],
                     }
                 ),
                 "metadata": AssetDefinition(
