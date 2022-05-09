@@ -18,7 +18,6 @@
     ],
     "start_datetime": "2020-10-03T00:00:00Z",
     "end_datetime": "2020-10-10T00:00:00Z",
-    "threedep:region": "n40w110",
     "datetime": "2020-10-10T00:00:00Z"
   },
   "geometry": {
@@ -77,6 +76,14 @@
       "href": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/13/TIFF/current/n41w106/USGS_13_n41w106.tif",
       "type": "image/tiff; application=geotiff; profile=cloud-optimized",
       "title": "USGS 1/3 Arc Second n41w106 20220331",
+      "raster:bands": [
+        {
+          "nodata": -999999.0,
+          "sampling": "point",
+          "data_type": "float32",
+          "spatial_resolution": 10
+        }
+      ],
       "roles": [
         "data"
       ]
@@ -111,7 +118,8 @@
     41.000556
   ],
   "stac_extensions": [
-    "https://stac-extensions.github.io/projection/v1.0.0/schema.json"
+    "https://stac-extensions.github.io/projection/v1.0.0/schema.json",
+    "https://stac-extensions.github.io/raster/v1.0.0/schema.json"
   ],
   "collection": "usgs-3dep-13"
 }

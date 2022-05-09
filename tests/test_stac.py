@@ -3,6 +3,7 @@ import unittest
 
 import pytest
 from pystac.extensions.projection import ProjectionExtension
+from pystac.extensions.raster import RasterExtension
 
 from stactools.threedep import stac
 from stactools.threedep.constants import USGS_FTP_BASE
@@ -45,6 +46,18 @@ class CreateItemTest(unittest.TestCase):
             data.media_type, "image/tiff; application=geotiff; profile=cloud-optimized"
         )
         self.assertTrue(data.roles, ["data"])
+        raster = RasterExtension.ext(data)
+        assert raster.bands
+        assert len(raster.bands) == 1
+        self.assertDictEqual(
+            raster.bands[0].to_dict(),
+            {
+                "nodata": -999999.0,
+                "sampling": "point",
+                "data_type": "float32",
+                "spatial_resolution": 30,
+            },
+        )
 
         data = item.assets["metadata"]
         self.assertEqual(
