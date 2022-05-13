@@ -90,7 +90,7 @@ class CreateItemTest(unittest.TestCase):
             data.href,
             (
                 "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/"
-                "1/TIFF/current/n41w106/n41w106.gpkg"
+                "1/TIFF/current/n41w106/USGS_1_n41w106.gpkg"
             ),
         )
         self.assertTrue(data.title is None)

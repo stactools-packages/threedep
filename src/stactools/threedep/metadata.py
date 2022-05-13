@@ -150,7 +150,7 @@ class Metadata:
             "entered into the standard DEM, are linked to these footprints."
         )
         return Asset(
-            href=self.asset_href_with_extension(base, "gpkg", id_only=True),
+            href=self.asset_href_with_extension(base, "gpkg"),
             media_type=MediaType.GEOPACKAGE,
             roles=["metadata"],
             description=description,
