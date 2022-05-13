@@ -21,6 +21,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Fixed
 
 - Proj extension, license, asset paths ([#12](https://github.com/stactools-packages/threedep/pull/12))
+- GPKG path ([#13](https://github.com/stactools-packages/threedep/pull/13))
 
 ## v0.2.0
 
