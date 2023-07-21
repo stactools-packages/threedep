@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - pre-commit, black, mypy, and more ([#11](https://github.com/stactools-packages/threedep/pull/11))
 - Raster and scientific extensions, package description ([#12](https://github.com/stactools-packages/threedep/pull/12))
+- Fix `asset_ids` definition in create-catalog CLI ([#14](https://github.com/stactools-packages/threedep/issues/14))
 
 ### Deprecated
 
