@@ -61,9 +61,7 @@ def create_threedep_command(cli: Group) -> Command:
         collections = {}
         items = defaultdict(list)
         for product in PRODUCTS:
-            if not asset_ids:
-                asset_ids = utils.fetch_ids(product)
-            for asset_id in asset_ids:
+            for asset_id in asset_ids or utils.fetch_ids(product):
                 item = stac.create_item_from_product_and_id(
                     product, asset_id, base=source
                 )
