@@ -38,7 +38,7 @@ def create_item_from_metadata(
 ) -> Item:
     """Creates a STAC item from Metadata."""
     href = metadata.asset_href_with_extension(base, "tif")
-    item = create.item(href, read_href_modifier)
+    item = create.item(href, read_href_modifier=read_href_modifier)
     item.id = metadata.stac_id
     end_datetime = metadata.end_datetime
     item.datetime = end_datetime

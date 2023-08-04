@@ -3,32 +3,32 @@
 
 repos:
   - repo: https://github.com/psf/black
-    rev: 22.3.0
+    rev: 23.7.0
     hooks:
       - id: black
   - repo: https://github.com/codespell-project/codespell
-    rev: v2.1.0
+    rev: v2.2.5
     hooks:
       - id: codespell
         args: [--ignore-words=.codespellignore]
         types_or: [jupyter, markdown, python, shell]
   - repo: https://github.com/PyCQA/doc8
-    rev: 0.11.1
+    rev: v1.1.1
     hooks:
       - id: doc8
   - repo: https://github.com/PyCQA/flake8
-    rev: 4.0.1
+    rev: 6.1.0
     hooks:
       - id: flake8
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v0.950
+    rev: v1.4.1
     hooks:
       - id: mypy
         additional_dependencies:
           - click
-          - stactools
+          - stactools>=0.5
   - repo: https://github.com/pycqa/isort
-    rev: 5.10.1
+    rev: 5.12.0
     hooks:
       - id: isort
         name: isort
